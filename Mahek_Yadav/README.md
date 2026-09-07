@@ -1,49 +1,125 @@
-# Assignment 07 - E-Commerce Product & Shopping Cart API
+# 🛒 E-Commerce Product & Shopping Cart API
 
-A lightweight E-Commerce REST API built with Node.js and Express.js using JSON files for persistent storage.
+A lightweight RESTful E-Commerce backend API built using Node.js and Express.js. The API provides product catalog management, user authentication, shopping cart functionality, stock validation, and checkout operations.
 
-## Technologies Used
+The project uses JSON files with Node.js `fs/promises` for asynchronous data persistence instead of a traditional database.
 
-- Node.js
-- Express.js
-- fs/promises
-- bcryptjs
-- express-session
-- dotenv
-- uuid
-- nodemon
+## 🚀 Live API
 
-## Features
+**Render Deployment:**
+https://itm-assignment-07-ecommerce-api.onrender.com
 
-- User registration with hashed passwords
-- Login and logout using sessions
-- Product CRUD operations
-- Product filtering by category
-- Product filtering by minimum and maximum price
-- In-stock filtering
-- Product search
-- Product sorting
-- Add products to shopping cart
-- Stock validation before adding items
-- Remove items from cart
-- Checkout and stock decrement
-- Request logging middleware
-- Product validation middleware
+Example:
 
-## Installation
+`https://your-project-name.onrender.com`
+
+---
+
+## 📌 Project Overview
+
+This project is developed as part of **Assignment 07 – E-Commerce Product & Shopping Cart API**.
+
+The API allows users to:
+
+* Register and log in securely
+* Manage products
+* Search and filter products
+* Sort products by price
+* Add products to a shopping cart
+* Validate product stock before adding items
+* Remove products from the cart
+* Calculate cart totals
+* Checkout and automatically update product stock
+* Maintain authenticated user sessions
+
+All application data is stored in structured JSON files.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Node.js**
+* **Express.js**
+* **JavaScript**
+* **JSON / File-System Storage**
+* **fs/promises**
+* **bcryptjs**
+* **Express-Session**
+* **dotenv**
+* **UUID**
+* **Nodemon**
+
+---
+
+## 📁 Project Structure
+
+```text
+assignment-07-ecommerce-api/
+│
+├── data/
+│   ├── carts.json
+│   ├── products.json
+│   └── users.json
+│
+├── controllers/
+│   ├── authController.js
+│   ├── cartController.js
+│   └── productController.js
+│
+├── middleware/
+│   ├── authGuard.js
+│   ├── logger.js
+│   └── validateProduct.js
+│
+├── routes/
+│   ├── authRoutes.js
+│   ├── cartRoutes.js
+│   └── productRoutes.js
+│
+├── utils/
+│   └── fileHelper.js
+│
+├── .env.example
+├── .gitignore
+├── package.json
+├── server.js
+└── README.md
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/mahek-yadav/itm-assignment-07-ecommerce-api.git
+```
+
+### 2. Navigate to the Project
+
+```bash
+cd itm-assignment-07-ecommerce-api
+```
+
+### 3. Install Dependencies
 
 ```bash
 npm install
 ```
 
-Create a `.env` file:
+### 4. Configure Environment Variables
+
+Create a `.env` file in the root directory.
 
 ```env
 PORT=3000
-SESSION_SECRET=your_secret_key
+SESSION_SECRET=your_session_secret
 ```
 
-Run in development mode:
+### 5. Start the Server
+
+For development:
 
 ```bash
 npm run dev
@@ -52,59 +128,28 @@ npm run dev
 Or:
 
 ```bash
-npm start
+node server.js
 ```
 
-Base URL:
+The API will run at:
 
 ```text
 http://localhost:3000
 ```
 
-## API Endpoints
+---
 
-### Authentication
+# 🔐 Authentication APIs
 
-- POST `/api/auth/register`
-- POST `/api/auth/login`
-- POST `/api/auth/logout`
+## Register User
 
-### Products
-
-- GET `/api/products`
-- GET `/api/products/:id`
-- POST `/api/products`
-- PUT `/api/products/:id`
-- DELETE `/api/products/:id`
-
-Filtering example:
+**POST**
 
 ```text
-GET /api/products?category=Electronics&minPrice=1000&maxPrice=5000&sort=price_asc
+/api/auth/register
 ```
 
-Search example:
-
-```text
-GET /api/products?search=keyboard
-```
-
-In-stock example:
-
-```text
-GET /api/products?inStock=true
-```
-
-### Cart
-
-Login first before testing cart routes.
-
-- GET `/api/cart`
-- POST `/api/cart/items`
-- DELETE `/api/cart/items/:productId`
-- POST `/api/cart/checkout`
-
-## Sample Register Body
+### Request Body
 
 ```json
 {
@@ -114,7 +159,25 @@ Login first before testing cart routes.
 }
 ```
 
-## Sample Login Body
+### Response
+
+```text
+201 Created
+```
+
+Passwords are securely hashed using `bcryptjs`.
+
+---
+
+## Login User
+
+**POST**
+
+```text
+/api/auth/login
+```
+
+### Request Body
 
 ```json
 {
@@ -123,7 +186,153 @@ Login first before testing cart routes.
 }
 ```
 
-## Sample Add-to-Cart Body
+A session is created after successful authentication.
+
+---
+
+## Logout User
+
+**POST**
+
+```text
+/api/auth/logout
+```
+
+Terminates the current user session.
+
+---
+
+# 📦 Product APIs
+
+## Get All Products
+
+**GET**
+
+```text
+/api/products
+```
+
+### Filtering Example
+
+```text
+/api/products?category=Electronics&minPrice=1000&maxPrice=5000
+```
+
+### Sorting Example
+
+```text
+/api/products?sort=price_asc
+```
+
+The endpoint supports:
+
+* Category filtering
+* Minimum price
+* Maximum price
+* Stock filtering
+* Price sorting
+* Product searching
+
+---
+
+## Get Product by ID
+
+**GET**
+
+```text
+/api/products/:id
+```
+
+Example:
+
+```text
+/api/products/prod_101
+```
+
+---
+
+## Add Product
+
+**POST**
+
+```text
+/api/products
+```
+
+### Request Body
+
+```json
+{
+  "name": "Mechanical Keyboard",
+  "category": "Electronics",
+  "price": 1899,
+  "stock": 25,
+  "rating": 4.5
+}
+```
+
+---
+
+## Update Product
+
+**PUT**
+
+```text
+/api/products/:id
+```
+
+### Request Body
+
+```json
+{
+  "stock": 30,
+  "price": 1799
+}
+```
+
+---
+
+## Delete Product
+
+**DELETE**
+
+```text
+/api/products/:id
+```
+
+Example:
+
+```text
+/api/products/prod_101
+```
+
+---
+
+# 🛒 Shopping Cart APIs
+
+Cart APIs require the user to be authenticated.
+
+## View Cart
+
+**GET**
+
+```text
+/api/cart
+```
+
+Returns the current user's cart along with calculated totals.
+
+---
+
+## Add Item to Cart
+
+**POST**
+
+```text
+/api/cart/items
+```
+
+### Request Body
 
 ```json
 {
@@ -132,24 +341,175 @@ Login first before testing cart routes.
 }
 ```
 
-## Sample Add Product Body
+Before adding an item, the API checks whether sufficient stock is available.
 
-```json
-{
-  "name": "Mechanical Mouse",
-  "category": "Electronics",
-  "price": 1299,
-  "stock": 18,
-  "rating": 4.3
-}
+If the requested quantity exceeds available stock, the API returns:
+
+```text
+400 Bad Request
 ```
 
-## Important Testing Note
+with an insufficient stock message.
 
-Because authentication uses Express Session, test register/login/cart requests in the same Postman session so that the session cookie is retained.
+---
 
-## Submission
+## Remove Item from Cart
 
-Push this project to a GitHub repository named:
+**DELETE**
 
-`itm-assignment-07-ecommerce-api`
+```text
+/api/cart/items/:productId
+```
+
+Example:
+
+```text
+/api/cart/items/prod_101
+```
+
+---
+
+## Checkout
+
+**POST**
+
+```text
+/api/cart/checkout
+```
+
+The checkout process:
+
+1. Checks whether the cart is empty.
+2. Validates product availability.
+3. Calculates the order total.
+4. Decreases product stock.
+5. Completes the checkout.
+6. Updates the cart data.
+
+---
+
+# 🗄️ Data Storage
+
+This project does not use MongoDB, Firebase, Supabase, or any other database.
+
+Data is stored in JSON files:
+
+```text
+data/
+├── products.json
+├── users.json
+└── carts.json
+```
+
+The project uses Node.js `fs/promises` for asynchronous reading and writing of JSON data.
+
+Example:
+
+```javascript
+const fs = require("fs/promises");
+```
+
+This allows the application to persist data without using a traditional database.
+
+---
+
+# 🔒 Middleware
+
+The project contains reusable middleware for different backend requirements.
+
+### Auth Guard
+
+Checks whether a user is authenticated before accessing protected cart routes.
+
+### Logger
+
+Logs incoming API requests for easier monitoring and debugging.
+
+### Product Validation
+
+Validates product information such as:
+
+* Price must be greater than 0
+* Stock cannot be negative
+* Required product fields must be present
+
+---
+
+# 🧪 API Testing
+
+The API can be tested using tools such as:
+
+* Postman
+* Thunder Client
+* REST Client
+* Browser for GET requests
+
+### Recommended Testing Flow
+
+1. Register a new user.
+2. Login using the registered credentials.
+3. Fetch the product list.
+4. Test product filtering and sorting.
+5. Add a product to the cart.
+6. Try adding more quantity than available stock.
+7. View the cart.
+8. Remove an item from the cart.
+9. Add an item again.
+10. Checkout.
+11. Verify that the product stock has decreased in `products.json`.
+
+---
+
+# 📊 Assignment Requirements Covered
+
+| Requirement            | Implemented |
+| ---------------------- | ----------- |
+| Node.js & Express.js   | ✅           |
+| REST API               | ✅           |
+| JSON File Storage      | ✅           |
+| `fs/promises`          | ✅           |
+| User Registration      | ✅           |
+| Password Hashing       | ✅           |
+| Session Authentication | ✅           |
+| Product CRUD           | ✅           |
+| Product Filtering      | ✅           |
+| Product Sorting        | ✅           |
+| Shopping Cart          | ✅           |
+| Stock Validation       | ✅           |
+| Checkout               | ✅           |
+| Custom Middleware      | ✅           |
+| Error Handling         | ✅           |
+| Render Deployment      | ✅           |
+
+---
+
+# 🌐 Deployment
+
+The backend API is deployed using **Render**.
+
+### Live API
+
+```text
+[PASTE YOUR RENDER LINK HERE]
+```
+
+---
+
+# 👩‍💻 Author
+
+**Mahek Yadav**
+
+B.Tech CSE
+ITM Skills University
+
+GitHub: `mahek-yadav`
+
+---
+
+## 📚 Assignment
+
+**Assignment 07: E-Commerce Product & Shopping Cart API**
+
+**Track:** Backend Development
+**Level:** Beginner to Intermediate
+**Technology:** Node.js + Express.js + JSON File Storage
