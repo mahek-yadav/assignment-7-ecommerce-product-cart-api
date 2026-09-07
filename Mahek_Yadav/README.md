@@ -9,9 +9,6 @@ The project uses JSON files with Node.js `fs/promises` for asynchronous data per
 **Render Deployment:**
 https://itm-assignment-07-ecommerce-api.onrender.com
 
-Example:
-
-`https://your-project-name.onrender.com`
 
 ---
 
